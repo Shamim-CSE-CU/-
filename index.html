@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation and Expense Report</title>
+    <style>
+        body {
+            font-family: 'Noto Serif Bengali', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            table-layout: auto; /* Allow dynamic column widths */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        /* Custom widths for specific table columns */
+        th:nth-child(1), td:nth-child(1) {
+            width: 8%; /* Serial number column */
+        }
+
+        th:nth-child(2), td:nth-child(2) {
+            min-width: 15rem; /* Description column */
+        }
+
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(4), td:nth-child(4) {
+            width: 12%; /* Income and Expense columns */
+        }
+
+        th:nth-child(5), td:nth-child(5) {
+            width: 15%; /* Remaining balance column */
+        }
+
+        th:nth-child(6), td:nth-child(6) {
+            width: 18%; /* Image column */
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        img {
+            max-width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        #summary {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>নোয়াপাড়া আদর্শ যুবসমাজের উদ্যোগে শীতবস্র বিতরণ-২০২৪</h1>
+    <h1>অনুদান এবং ব্যয়ের হিসাব</h1>
+
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>ক্রমিক নং</th>
+                <th>বিবরণ</th>
+                <th>উৎপন্ন টাকা (৳)</th>
+                <th>ব্যয় (৳)</th>
+                <th>অবশিষ্ট টাকা (৳)</th>
+                <th>ছবি</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be generated dynamically -->
+        </tbody>
+    </table>
+
+    <div id="summary">
+        <p><strong>মোট উৎপন্ন টাকা:</strong> <span id="totalIncome">0</span> ৳</p>
+        <p><strong>মোট ব্যয়:</strong> <span id="totalExpense">0</span> ৳</p>
+        <p><strong>অবশিষ্ট টাকা:</strong> <span id="finalBalance">0</span> ৳</p>
+    </div>
+
+    <button onclick="generateReport()">প্রতিবেদন তৈরি করুন</button>
+
+    <script>
+        function generateReport() {
+            const reportData = [
+                { description: "প্রারম্ভিক ব্যালেন্স", income: 0, expense: 0, image: "" },
+                { description: "অনুদান (Donation account- Hafez Zubayer)", income: 5000, expense: 0, image: "donation1.jpg" },
+                { description: "অনুদান (Donation account-হাফেজ গোলাম মোসাদ্দেক রুমেল)", income: 18000, expense: 0, image: "donation2.jpg" },
+                { description: "খরচ (Expense 1 Adom)", income: 0, expense: 17150, image: "adom.jpg" },
+                { description: "খরচ (Expense 2 Rumel)", income: 0, expense: 1600, image: "rumel.jpg" },
+                { description: "খরচ (Expense 3 Khairul,Sagor)", income: 0, expense: 3100, image: "khairul.jpg" },
+                { description: "খরচ (অনুদান and Expense 4 দাওয়াত নামা)", income: 100, expense: 100, image: "" }
+            ];
+
+            const tableBody = document.querySelector("#reportTable tbody");
+            tableBody.innerHTML = ""; // Clear previous content
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+            let balance = 0;
+
+            reportData.forEach((row, index) => {
+                totalIncome += row.income;
+                totalExpense += row.expense;
+                balance += row.income - row.expense;
+
+                const imageCell = row.image
+                    ? `<img src="${row.image}" alt="Donation Image">`
+                    : "-";
+
+                const tableRow = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${row.description}</td>
+                        <td>${row.income}</td>
+                        <td>${row.expense}</td>
+                        <td>${balance}</td>
+                        <td>${imageCell}</td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML("beforeend", tableRow);
+            });
+
+            document.getElementById("totalIncome").textContent = totalIncome;
+            document.getElementById("totalExpense").textContent = totalExpense;
+            document.getElementById("finalBalance").textContent = balance;
+        }
+    </script>
+</body>
+</html>
